@@ -883,6 +883,16 @@ class ICWP_CALQIO_Plugin_Controller extends ICWP_CALQIO_Foundation {
 	}
 
 	/**
+	 * Get the path to a library source file
+	 *
+	 * @param string $sLibFile
+	 * @return string
+	 */
+	public function getPath_LibFile( $sLibFile = '' ) {
+		return $this->getPath_Source().'lib'.ICWP_DS.$sLibFile;
+	}
+
+	/**
 	 * get the root directory for the plugin with the trailing slash
 	 *
 	 * @return string
@@ -940,6 +950,14 @@ class ICWP_CALQIO_Plugin_Controller extends ICWP_CALQIO_Foundation {
 	 */
 	public function getVersion() {
 		return $this->getPluginSpec_Property( 'version' );
+	}
+
+	/**
+	 * @param string $sPathToLib
+	 * @return mixed
+	 */
+	public function loadLib( $sPathToLib ) {
+		return include( $this->getPath_LibFile( $sPathToLib ) );
 	}
 
 	/**

@@ -31,10 +31,42 @@ if ( !class_exists( 'ICWP_CALQIO_FeatureHandler_Calqio', false ) ):
 		 * @return boolean
 		 */
 		public function getIsMainFeatureEnabled() {
-			$sWriteKey = $this->getTrackingWriteKey();
-			$bEnabled = !empty( $sWriteKey ) && parent::getIsMainFeatureEnabled();
+			$bEnabled = $this->getTrackingWriteKeyValid() && parent::getIsMainFeatureEnabled();
 			return $bEnabled;
 		}
+
+		protected function getTrackingWriteKeyValid() {
+			$sWriteKey = $this->getTrackingWriteKey();
+			return ( !empty( $sWriteKey ) && ( strlen( $sWriteKey ) == 32 ) && ( strpos( $sWriteKey, 'Invalid Key' ) === false) ) ;
+		}
+
+		public function doExtraSubmitProcessing() {
+			//Test out the Calq key.
+			$sKeyVerification = $this->verifyCalqKey( $this->getTrackingWriteKey() );
+			$this->setOpt( 'write_key', $sKeyVerification );
+		}
+
+		protected function verifyCalqKey( $sKey ) {
+			$this->getController()->loadLib( 'calq/CalqClient.php' );
+			if ( !class_exists( 'CalqClient' ) ) {
+				return false;
+			}
+			try {
+				$oClient = CalqClient::fromCurrentRequest( $sKey );
+			}
+			catch( Exception $oE ) {
+				return sprintf( _calqio__( 'Invalid Key: %s' ), _calqio__( 'Ensure the key is exactly 32 digits long' ) );
+			}
+			try {
+				$oClient->track( 'Verify WordPress Configuration' );
+				$oClient->flush();
+			}
+			catch( Exception $oE ) {
+				return sprintf( _calqio__( 'Invalid Key: %s' ), $oE->getMessage() );
+			}
+			return $sKey;
+		}
+
 
 		/**
 		 * @return string
