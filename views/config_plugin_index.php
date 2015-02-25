@@ -1,5 +1,6 @@
 <?php
-include_once( 'icwp-wpsf-config_header.php' );
+$sBaseDirName = dirname(__FILE__).ICWP_DS;
+include_once( $sBaseDirName.'config_header.php' );
 ?>
 		<?php if ( $icwp_fShowAds ) : ?>
 			<div class="row" id="worpit_promo">
@@ -56,4 +57,4 @@ include_once( 'icwp-wpsf-config_header.php' );
 		  </div><!-- / span6 -->
 		</div><!-- / row -->
 
-<?php include_once( 'icwp-wpsf-config_footer.php' );
+<?php include_once( $sBaseDirName.'config_footer.php' );

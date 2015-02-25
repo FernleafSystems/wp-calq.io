@@ -48,6 +48,8 @@ class ICWP_CALQIO_Plugin_Controller extends ICWP_CALQIO_Foundation {
 	 */
 	private $sPluginBaseFile;
 
+	private $aRequirementsMessages;
+
 	/**
 	 * @param $sRootFile
 	 *
@@ -75,22 +77,77 @@ class ICWP_CALQIO_Plugin_Controller extends ICWP_CALQIO_Foundation {
 			catch( Exception $oE ) {
 				return null;
 			}
-			$this->doRegisterHooks();
+			$bMeetsRequirements = $this->getMeetsRequirements();
+			if ( $bMeetsRequirements ) {
+				$this->doRegisterHooks();
+			}
+			else {
+				add_action(	'admin_menu', array( $this, 'adminNoticeDoesNotMeetRequirements' ) );
+				add_action(	'network_admin_notices', array( $this, 'adminNoticeDoesNotMeetRequirements' ) );
+			}
 		}
+	}
+
+	protected function getMeetsRequirements() {
+		$bMeetsRequirements = true;
+		$aRequirementsMessages = $this->getRequirementsMessages();
+		$sMinimumPhp = $this->getPluginSpec_Requirement( 'php' );
+		if ( !empty( $sMinimumPhp ) ) {
+			if ( true || version_compare( phpversion(), $sMinimumPhp, '<' ) ) {
+				$aRequirementsMessages[] = sprintf( 'PHP does not meet minimum version. Your version: %s.  Required Version: %s.', PHP_VERSION, $sMinimumPhp );
+				$bMeetsRequirements = false;
+			}
+		}
+
+		$this->aRequirementsMessages = $aRequirementsMessages;
+		return $bMeetsRequirements;
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getRequirementsMessages() {
+		if ( !isset( $this->aRequirementsMessages ) ) {
+			$this->aRequirementsMessages = array();
+		}
+		return $this->aRequirementsMessages;
+	}
+
+	public function adminNoticeDoesNotMeetRequirements() {
+		$sMessage = sprintf( 'Web Hosting requirements for Plugin "%s" are not met and you should deactivate the plugin.',
+			'<strong>'.$this->getHumanName().'</strong>'
+		);
+		$aMessages = $this->getRequirementsMessages();
+		if ( !empty( $aMessages ) && is_array( $aMessages ) ) {
+			$sMessage .= sprintf( '<ul style="list-style: inside none disc;"><li>%s</li></ul>', implode( '</li><li>', $aMessages ) );
+		}
+		$sMessage .= sprintf( '<a href="https://wordpress.org/plugins/%s/faq" target="_blank">Click here for more information on requirements</a>.', $this->getTextDomain() );
+		echo $this->wrapAdminNoticeHtml( $sMessage, 'error' );
 	}
 
 	/**
 	 */
 	protected function doRegisterHooks() {
 		$this->registerActivationHooks();
-		add_action( 'plugins_loaded',			array( $this, 'onWpPluginsLoaded' ) );
-		add_action( 'admin_init',				array( $this, 'onWpAdminInit' ) );
-		add_filter( 'plugin_action_links',		array( $this, 'onWpPluginActionLinks' ), 10, 4 );
-		add_action( 'admin_menu',				array( $this, 'onWpAdminMenu' ) );
-		add_action(	'network_admin_menu',		array( $this, 'onWpAdminMenu' ) );
-		add_action( 'wp_loaded',			    array( $this, 'onWpLoaded' ) );
-		add_action( 'init',			        	array( $this, 'onWpInit' ) );
+		add_action( 'plugins_loaded',					array( $this, 'onWpPluginsLoaded' ) );
+
+		add_action( 'init',			        			array( $this, 'onWpInit' ) );
+		add_action( 'admin_init',						array( $this, 'onWpAdminInit' ) );
+		add_action( 'wp_loaded',			    		array( $this, 'onWpLoaded' ) );
+
+		add_action( 'admin_menu',						array( $this, 'onWpAdminMenu' ) );
+		add_action(	'network_admin_menu',				array( $this, 'onWpAdminMenu' ) );
+		add_action( 'admin_notices',					array( $this, 'onWpAdminNotices' ) );
+		add_action( 'network_admin_notices',			array( $this, 'onWpAdminNotices' ) );
+
+		add_filter( 'all_plugins', 						array( $this, 'filter_hidePluginFromTableList' ) );
+		add_filter( 'all_plugins',						array( $this, 'doPluginLabels' ) );
+		add_filter( 'plugin_action_links',				array( $this, 'onWpPluginActionLinks' ), 10, 4 );
+		add_filter( 'site_transient_update_plugins',	array( $this, 'filter_hidePluginUpdatesFromUI' ) );
+		add_action( 'in_plugin_update_message-'.$this->getPluginBaseFile(), array( $this, 'onWpPluginUpdateMessage' ) );
+
 		add_filter( 'auto_update_plugin',		array( $this, 'onWpAutoUpdate' ), 10001, 2 );
+
 		add_action( 'shutdown',					array( $this, 'onWpShutdown' ) );
 	}
 
@@ -117,24 +174,14 @@ class ICWP_CALQIO_Plugin_Controller extends ICWP_CALQIO_Foundation {
 	}
 
 	/**
-	 * Hooked to 'plugins_loaded'
 	 */
 	public function onWpPluginsLoaded() {
+		$this->doLoadTextDomain();
 //		add_filter( $this->doPluginPrefix( 'has_permission_to_view' ), array( $this, 'filter_hasPermissionToView' ) );
 //		add_filter( $this->doPluginPrefix( 'has_permission_to_submit' ), array( $this, 'filter_hasPermissionToSubmit' ) );
-		if ( $this->getIsValidAdminArea() ) {
-			add_action( 'admin_notices',			array( $this, 'onWpAdminNotices' ) );
-			add_action( 'network_admin_notices',	array( $this, 'onWpAdminNotices' ) );
-			add_filter( 'all_plugins', 				array( $this, 'filter_hidePluginFromTableList' ) );
-			add_filter( 'all_plugins',				array( $this, 'doPluginLabels' ) );
-			add_filter( 'site_transient_update_plugins', array( $this, 'filter_hidePluginUpdatesFromUI' ) );
-			add_action( 'in_plugin_update_message-'.$this->getPluginBaseFile(), array( $this, 'onWpPluginUpdateMessage' ) );
-		}
-		$this->doLoadTextDomain();
 	}
 
 	/**
-	 * Hooked to 'plugins_loaded'
 	 */
 	public function onWpAdminInit() {
 		add_action( 'admin_enqueue_scripts', 	array( $this, 'onWpEnqueueAdminCss' ), 99 );
@@ -270,12 +317,24 @@ class ICWP_CALQIO_Plugin_Controller extends ICWP_CALQIO_Foundation {
 		}
 		$aAdminNotices = apply_filters( $this->doPluginPrefix( 'admin_notices' ), array() );
 		if ( !empty( $aAdminNotices ) && is_array( $aAdminNotices ) ) {
-
 			foreach( $aAdminNotices as $sAdminNotice ) {
 				echo $sAdminNotice;
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Provides the basic HTML template for printing a WordPress Admin Notices
+	 *
+	 * @param $sNotice - The message to be displayed.
+	 * @param $sMessageClass - either error or updated
+	 * @return string
+	 */
+	protected function wrapAdminNoticeHtml( $sNotice = '', $sMessageClass = 'updated' ) {
+		$sWrapper = '<div class="%s icwp-admin-notice">%s</div>';
+		$sFullNotice = sprintf( $sWrapper, $sMessageClass, $sNotice );
+		return $sFullNotice;
 	}
 
 	public function onWpEnqueueFrontendCss() {
@@ -599,6 +658,14 @@ class ICWP_CALQIO_Plugin_Controller extends ICWP_CALQIO_Foundation {
 	 */
 	protected function getPluginSpec_Property( $sKey ) {
 		return isset( self::$aPluginSpec['properties'][$sKey] ) ? self::$aPluginSpec['properties'][$sKey] : null;
+	}
+
+	/**
+	 * @param string $sKey
+	 * @return mixed|null
+	 */
+	protected function getPluginSpec_Requirement( $sKey ) {
+		return isset( self::$aPluginSpec['requirements'][$sKey] ) ? self::$aPluginSpec['requirements'][$sKey] : null;
 	}
 
 	/**
@@ -958,6 +1025,14 @@ class ICWP_CALQIO_Plugin_Controller extends ICWP_CALQIO_Foundation {
 	 */
 	public function loadLib( $sPathToLib ) {
 		return include( $this->getPath_LibFile( $sPathToLib ) );
+	}
+
+	/**
+	 */
+	public function deactivateSelf() {
+		if ( $this->getIsValidAdminArea() && function_exists( 'deactivate_plugins' ) ) {
+			deactivate_plugins( $this->getPluginBaseFile() );
+		}
 	}
 
 	/**
