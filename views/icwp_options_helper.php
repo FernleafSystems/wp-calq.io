@@ -1,7 +1,7 @@
 <?php
 
 function printOptionsPageHeader( $insSection = '' ) {
-	$sLinkedIcwp = '<a href="http://icwp.io/3a" target="_blank">iControlWP</a>';
+	$sLinkedIcwp = '<a href="http://icwp.io/5u" target="_blank">iControlWP</a>';
 	echo '<div class="page-header">';
 	echo '<h2><a id="pluginlogo_32" class="header-icon32" href="http://icwp.io/2k" target="_blank"></a>';
 	$sBaseTitle = sprintf( _calqio__( 'Calq.io For WordPress (from %s)' ), $sLinkedIcwp );
