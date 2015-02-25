@@ -57,44 +57,52 @@ class ICWP_CALQIO_Plugin_Controller extends ICWP_CALQIO_Foundation {
 	 */
 	public static function GetInstance( $sRootFile ) {
 		if ( !isset( self::$oInstance ) ) {
-			self::$oInstance = new self( $sRootFile );
+			try {
+				self::$oInstance = new self( $sRootFile );
+			}
+			catch( Exception $oE ) {
+				return null;
+			}
 		}
 		return self::$oInstance;
 	}
 
 	/**
-	 * @param string $sRootFile
+	 * @param $sRootFile
+	 * @throws Exception
 	 */
 	private function __construct( $sRootFile ) {
 		self::$sRootFile = $sRootFile;
 		if ( empty( self::$aPluginSpec ) ) {
-			try {
-				self::$aPluginSpec = $this->readPluginConfiguration();
-				if ( empty( self::$aPluginSpec ) ) {
-					return null;
-				}
-			}
-			catch( Exception $oE ) {
-				return null;
-			}
-			$bMeetsRequirements = $this->getMeetsRequirements();
-			if ( $bMeetsRequirements ) {
-				$this->doRegisterHooks();
-			}
-			else {
+			self::$aPluginSpec = $this->readPluginConfiguration();
+
+			// Only check requirements on the admin side to ensure no frontend penalty
+			if ( is_admin() && !$this->getMeetsRequirements() ) {
 				add_action(	'admin_menu', array( $this, 'adminNoticeDoesNotMeetRequirements' ) );
 				add_action(	'network_admin_notices', array( $this, 'adminNoticeDoesNotMeetRequirements' ) );
+				throw new Exception( 'Plugin does not meet minimum requirements' );
 			}
+			$this->doRegisterHooks();
 		}
 	}
 
 	protected function getMeetsRequirements() {
 		$bMeetsRequirements = true;
 		$aRequirementsMessages = $this->getRequirementsMessages();
+
 		$sMinimumPhp = $this->getPluginSpec_Requirement( 'php' );
 		if ( !empty( $sMinimumPhp ) ) {
-			if ( true || version_compare( phpversion(), $sMinimumPhp, '<' ) ) {
+			if ( version_compare( phpversion(), $sMinimumPhp, '<' ) ) {
 				$aRequirementsMessages[] = sprintf( 'PHP does not meet minimum version. Your version: %s.  Required Version: %s.', PHP_VERSION, $sMinimumPhp );
+				$bMeetsRequirements = false;
+			}
+		}
+
+		$sMinimumWp = $this->getPluginSpec_Requirement( 'wordpress' );
+		if ( !empty( $sMinimumWp ) ) {
+			$sWpVersion = $this->loadWpFunctionsProcessor()->getWordpressVersion();
+			if ( version_compare( $sWpVersion, $sMinimumWp, '<' ) ) {
+				$aRequirementsMessages[] = sprintf( 'WordPress does not meet minimum version. Your version: %s.  Required Version: %s.', $sWpVersion, $sMinimumWp );
 				$bMeetsRequirements = false;
 			}
 		}
