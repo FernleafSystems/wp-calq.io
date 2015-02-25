@@ -28,6 +28,44 @@ if ( !class_exists( 'ICWP_CALQIO_FeatureHandler_Calqio', false ) ):
 		}
 
 		/**
+		 * @return boolean
+		 */
+		public function getIsMainFeatureEnabled() {
+			$sWriteKey = $this->getTrackingWriteKey();
+			$bEnabled = !empty( $sWriteKey ) && parent::getIsMainFeatureEnabled();
+			return $bEnabled;
+		}
+
+		/**
+		 * @return string
+		 */
+		public function getTrackingWriteKey() {
+			return $this->getOpt( 'write_key' );
+		}
+
+		/**
+		 * @return string
+		 */
+		public function getCookieDomain() {
+			$sDomain = $this->getOpt( 'tracking_cookie_domain' );
+			return empty( $sDomain ) ? COOKIE_DOMAIN : $sDomain;
+		}
+
+		/**
+		 * @return string
+		 */
+		public function getIgnoreLoggedInUser() {
+			return $this->getOptIs( 'ignore_logged_in_user', 'Y' );
+		}
+
+		/**
+		 * @return string
+		 */
+		public function getTrackEveryPageView() {
+			return $this->getOptIs( 'track_every_page_view', 'Y' );
+		}
+
+		/**
 		 * @param array $aOptionsParams
 		 * @return array
 		 * @throws Exception
@@ -83,13 +121,19 @@ if ( !class_exists( 'ICWP_CALQIO_FeatureHandler_Calqio', false ) ):
 				case 'tracking_cookie_domain' :
 					$sName = _calqio__( 'Cookie Domain' );
 					$sSummary = _calqio__( 'The Domain Name To Store Tracking Cookie' );
-					$sDescription = sprintf( _calqio__( 'If you leave this empty, your default WordPres Cookie Domain will be used: %s' ), '<span style"text-decoration:underline;">'.COOKIE_DOMAIN.'</span>' );
+					$sDescription = sprintf( _calqio__( 'If you leave this empty, your default WordPress Cookie Domain will be used: %s' ), '<span style"text-decoration:underline;">'.COOKIE_DOMAIN.'</span>' );
 					break;
 
 				case 'track_every_page_view' :
 					$sName = _calqio__( 'Track Page Views' );
 					$sSummary = _calqio__( 'Track Every Page View' );
 					$sDescription = _calqio__( 'Every page load will be tracked when this option is enabled.' );
+					break;
+
+				case 'ignore_logged_in_user' :
+					$sName = _calqio__( 'Ignore Users' );
+					$sSummary = _calqio__( 'Ignore Logged-In Users' );
+					$sDescription = _calqio__( 'If a visitor is considered to be logged-in by WordPress, no events will be tracked.' );
 					break;
 
 				default:

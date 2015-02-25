@@ -22,7 +22,7 @@ options:
   -
     key: 'enable_calqio'
     section: 'section_enable_plugin_feature_calqio'
-    default: 'Y'
+    default: 'N'
     type: 'checkbox'
     link_info: ''
     link_blog: ''
@@ -53,6 +53,13 @@ options:
     section: 'section_calqio_basic_configuration'
     default: ''
     type: 'text'
+    link_info: ''
+    link_blog: ''
+  -
+    key: 'ignore_logged_in_user'
+    section: 'section_calqio_basic_configuration'
+    default: 'N'
+    type: 'checkbox'
     link_info: ''
     link_blog: ''
   -

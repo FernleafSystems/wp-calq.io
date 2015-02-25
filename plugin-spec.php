@@ -1,7 +1,7 @@
 <?php
 return "---
 properties:
-  version: '1.0'
+  version: '1.10'
   slug_parent: 'icwp'
   slug_plugin: 'calqio'
   text_domain: 'wp-calqio'

@@ -918,8 +918,8 @@ if ( !class_exists( 'ICWP_CALQIO_FeatureHandler_Base_V3', false ) ):
 
 			if ( empty( $sView ) ) {
 				$oWpFs = $this->loadFileSystemProcessor();
-				$sCustomViewSource = $this->getController()->getPath_ViewsFile( $this->doPluginPrefix( 'config_'.$this->getFeatureSlug().'_index' ) );
-				$sNormalViewSource = $this->getController()->getPath_ViewsFile( $this->doPluginPrefix( 'config_index' ) );
+				$sCustomViewSource = $this->getController()->getPath_ViewsFile( 'config_'.$this->getFeatureSlug().'_index' );
+				$sNormalViewSource = $this->getController()->getPath_ViewsFile( 'config_index' );
 				$sFile = $oWpFs->exists( $sCustomViewSource ) ? $sCustomViewSource : $sNormalViewSource;
 			}
 			else {
