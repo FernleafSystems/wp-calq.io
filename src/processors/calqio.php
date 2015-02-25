@@ -78,15 +78,16 @@ if ( !class_exists( 'ICWP_CALQIO_Processor_Calqio_V1', false ) ):
 		public function getAdditionalCalqDirectives() {
 			/** @var ICWP_CALQIO_FeatureHandler_Calqio $oFO */
 			$oFO = $this->getFeatureOptions();
+			$oWp = $this->loadWpFunctionsProcessor();
 
 			$aDirectives = array();
 			if ( !$oFO->getIgnoreLoggedInUser() ) {
-//				$sIdentifier = $this->getIdentifier();
-//				if ( !empty( $sIdentifier ) ) {
-//					$aDirectives[] = sprintf( 'calq.user.identify("%s");', $sIdentifier );
-//				}
 
-				$aDirectives[] = sprintf( 'calq.user.profile( { "$full_name": "%s", "$email": "%s" } );', $sUserFullname, $sUserEmail );  // defined in base_controller
+				$oUser = $oWp->getCurrentWpUser();
+				if ( !is_null( $oUser ) ) {
+//					$aDirectives[] = sprintf( 'calq.user.identify( "%s" );', 'WP_'.$oUser->ID );
+					$aDirectives[] = sprintf( 'calq.user.profile( { "$full_name": "%s", "$email": "%s" } );', $oUser->get( 'display_name' ), $oUser->get( 'user_email' ) );  // defined in base_controller
+				}
 
 				if ( $oFO->getTrackEveryPageView() ) {
 					$aDirectives[] = 'calq.action.trackPageView();';
