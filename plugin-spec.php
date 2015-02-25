@@ -39,9 +39,9 @@ menu:
   has_submenu: true # to-do is allow for non-top-level menu items.
 
 labels: #the keys below must correspond exactly for the 'all_plugins' filter
-  Name: 'iControlWP'
-  Description: 'Take Control Of All WordPress Sites From A Single Dashboard'
-  Title: 'iControlWP'
+  Name: 'Calq.io For WordPress'
+  Description: 'Easily Integrate Calq.io Analytics Into Your WordPress Sites'
+  Title: 'Calq.io'
   Author: 'iControlWP'
   AuthorName: 'iControlWP'
   PluginURI: 'http://icwp.io/home'
