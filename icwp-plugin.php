@@ -4,6 +4,7 @@ Plugin Name: Calq.io For WordPress
 Plugin URI: http://icwp.io/home
 Description: Easily Integrate Calq.io Analytics Into Your WordPress Sites
 Version: 1.0.0
+Text Domain: wp-calqio
 Author: iControlWP
 Author URI: http://www.icontrolwp.com/
 */
@@ -32,23 +33,19 @@ if ( !defined( 'ICWP_DS' ) ) {
 	define( 'ICWP_DS', DIRECTORY_SEPARATOR );
 }
 
-if ( !defined( 'WORPIT_DS' ) ) {
-	define( 'WORPIT_DS', DIRECTORY_SEPARATOR );
-}
-
 if ( !function_exists( '_calqio_e' ) ) {
 	function _calqio_e( $sStr ) {
-		_e( $sStr, 'wp-simple-firewall' );
+		_e( $sStr, 'wp-calqio' );
 	}
 }
 if ( !function_exists( '_calqio__' ) ) {
 	function _calqio__( $sStr ) {
-		return __( $sStr, 'wp-simple-firewall' );
+		return __( $sStr, 'wp-calqio' );
 	}
 }
 
 
-// By requiring this file here, we assume we wont need to require it anywhere else.
+// By requiring this file now, we assume we wont need to require it anywhere else.
 require_once( dirname(__FILE__).ICWP_DS.'src'.ICWP_DS.'common'.ICWP_DS.'icwp-foundation.php' );
 
 class ICWP_CALQIO_Plugin extends ICWP_CALQIO_Foundation {
@@ -78,5 +75,5 @@ require_once( dirname(__FILE__).ICWP_DS.'icwp-plugin-controller.php' );
 
 $oICWP_App_Controller = ICWP_CALQIO_Plugin_Controller::GetInstance( __FILE__ );
 if ( !is_null( $oICWP_App_Controller ) ) {
-	$g_oWorpit = new ICWP_CALQIO_Plugin( $oICWP_App_Controller );
+	$g_oCalqioPlugin = new ICWP_CALQIO_Plugin( $oICWP_App_Controller );
 }

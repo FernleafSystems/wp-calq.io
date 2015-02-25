@@ -1,7 +1,7 @@
 <?php
 return "---
 properties:
-  version: '1.10'
+  version: '1.0.0'
   slug_parent: 'icwp'
   slug_plugin: 'calqio'
   text_domain: 'wp-calqio'
@@ -9,6 +9,10 @@ properties:
   wpms_network_admin_only: true
   logging_enabled: false
   autoupdate: 'yes' #yes/block/pass
+
+requirements:
+  php: '5.3.0'
+  wordpress: '3.5.0'
 
 paths:
   source: 'src'

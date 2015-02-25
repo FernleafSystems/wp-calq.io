@@ -1,10 +1,10 @@
 <?php
 
 function printOptionsPageHeader( $insSection = '' ) {
-	$sLinkedIcwp = '<a href="http://icwp.io/3a" target="_blank">iControlWP</a>';
+	$sLinkedIcwp = '<a href="http://icwp.io/5u" target="_blank">iControlWP</a>';
 	echo '<div class="page-header">';
 	echo '<h2><a id="pluginlogo_32" class="header-icon32" href="http://icwp.io/2k" target="_blank"></a>';
-	$sBaseTitle = sprintf( _wpsf__( 'WordPress Simple Firewall (from %s)' ), $sLinkedIcwp );
+	$sBaseTitle = sprintf( _calqio__( 'Calq.io For WordPress (from %s)' ), $sLinkedIcwp );
 	if ( !empty($insSection) ) {
 		echo sprintf( '%s :: %s', $insSection, $sBaseTitle );
 	}
@@ -95,9 +95,9 @@ function getPluginOptionSpan( $aOption, $nSpanSize, $insVarPrefix = '' ) {
 		$sLink = '';
 		$sLinkTemplate = '<br /><span>[%s]</span>';
 		if ( !empty($sHelpLink) ) {
-			$sLink = sprintf( $sLinkTemplate, '<a href="'.$sHelpLink.'" target="_blank">'._wpsf__('More Info').'</a>%s' );
+			$sLink = sprintf( $sLinkTemplate, '<a href="'.$sHelpLink.'" target="_blank">'._calqio__('More Info').'</a>%s' );
 			if ( !empty( $sBlogLink ) ) {
-				$sLink = sprintf( $sLink, ' | <a href="'.$sBlogLink.'" target="_blank">'._wpsf__('Blog').'</a>' );
+				$sLink = sprintf( $sLink, ' | <a href="'.$sBlogLink.'" target="_blank">'._calqio__('Blog').'</a>' );
 			}
 			else {
 				$sLink = sprintf( $sLink, '' );

@@ -45,10 +45,13 @@ if ( !class_exists( 'ICWP_CALQIO_Processor_Calqio_V1', false ) ):
 		 * Can only ever run once
 		 */
 		public function printCalqJsSnippet() {
-			if ( $this->bRanOnce ) {
+			/** @var ICWP_CALQIO_FeatureHandler_Calqio $oFO */
+			$oFO = $this->getFeatureOptions();
+			if ( $this->bRanOnce || ( $oFO->getIgnoreLoggedInUser() && is_user_logged_in() ) ) {
 				return;
 			}
 			$this->bRanOnce = true;
+
 			$sSnippet = $this->getBaseCalqJsSnippet();
 			if ( !empty( $sSnippet ) ) {
 				echo $sSnippet;
@@ -75,23 +78,21 @@ if ( !class_exists( 'ICWP_CALQIO_Processor_Calqio_V1', false ) ):
 		/**
 		 * @return string
 		 */
-		public function getAdditionalCalqDirectives() {
+		protected function getAdditionalCalqDirectives() {
 			/** @var ICWP_CALQIO_FeatureHandler_Calqio $oFO */
 			$oFO = $this->getFeatureOptions();
 			$oWp = $this->loadWpFunctionsProcessor();
 
 			$aDirectives = array();
-			if ( !$oFO->getIgnoreLoggedInUser() ) {
 
-				$oUser = $oWp->getCurrentWpUser();
-				if ( !is_null( $oUser ) ) {
+			$oUser = $oWp->getCurrentWpUser();
+			if ( !is_null( $oUser ) ) {
 //					$aDirectives[] = sprintf( 'calq.user.identify( "%s" );', 'WP_'.$oUser->ID );
-					$aDirectives[] = sprintf( 'calq.user.profile( { "$full_name": "%s", "$email": "%s" } );', $oUser->get( 'display_name' ), $oUser->get( 'user_email' ) );  // defined in base_controller
-				}
+				$aDirectives[] = sprintf( 'calq.user.profile( { "$full_name": "%s", "$email": "%s" } );', $oUser->get( 'display_name' ), $oUser->get( 'user_email' ) );  // defined in base_controller
+			}
 
-				if ( $oFO->getTrackEveryPageView() ) {
-					$aDirectives[] = 'calq.action.trackPageView();';
-				}
+			if ( $oFO->getTrackEveryPageView() ) {
+				$aDirectives[] = 'calq.action.trackPageView();';
 			}
 
 			return implode( ' ', $aDirectives );
