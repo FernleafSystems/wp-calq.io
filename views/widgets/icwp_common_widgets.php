@@ -1,5 +1,5 @@
 <?php 
-$sPluginName = 'WordPress Simple Firewall';
+$sPluginName = 'Calq.io For WordPress';
 ?>
 <div class="row">
   <div class="span12">
@@ -23,7 +23,7 @@ $sPluginName = 'WordPress Simple Firewall';
 			<div class="span5">
 				<ul>
 					<li><a href="http://icwp.io/2d" target="_blank"><strong>Visit the plugin Help & Support page</strong></a>.</li>
-					<li><a href="http://wordpress.org/extend/plugins/wp-simple-firewall/" target="_blank">Show some love, and give this a 5 star rating on WordPress.org.</a></li>
+					<li><a href="https://wordpress.org/plugins/wp-calqio/" target="_blank">Show some love, and give this a 5 star rating on WordPress.org.</a></li>
 				</ul>
 			</div>
 		</div>

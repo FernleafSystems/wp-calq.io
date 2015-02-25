@@ -88,6 +88,53 @@ if ( !class_exists( 'ICWP_CALQIO_FeatureHandler_Plugin', false ) ):
 
 			$this->setOpt( 'installed_version', $this->getController()->getVersion() );
 		}
+
+		/**
+		 * @param array $aOptionsParams
+		 * @return array
+		 * @throws Exception
+		 */
+		protected function loadStrings_SectionTitles( $aOptionsParams ) {
+
+			$sSectionSlug = $aOptionsParams['section_slug'];
+			switch( $aOptionsParams['section_slug'] ) {
+
+				case 'section_global_options' :
+					$sTitle = _calqio__( 'Global Plugin Options' );
+					break;
+
+				default:
+					throw new Exception( sprintf( 'A section slug was defined but with no associated strings. Slug: "%s".', $sSectionSlug ) );
+			}
+			$aOptionsParams['section_title'] = $sTitle;
+			return $aOptionsParams;
+		}
+
+		/**
+		 * @param array $aOptionsParams
+		 * @return array
+		 * @throws Exception
+		 */
+		protected function loadStrings_Options( $aOptionsParams ) {
+
+			$sKey = $aOptionsParams['key'];
+			switch( $sKey ) {
+
+				case 'delete_on_deactivate' :
+					$sName = _calqio__( 'Delete Plugin Settings' );
+					$sSummary = _calqio__( 'Delete All Plugin Settings Upon Plugin Deactivation' );
+					$sDescription = _calqio__( 'Careful: Removes all plugin options when you deactivate the plugin' );
+					break;
+
+				default:
+					throw new Exception( sprintf( 'An option has been defined but without strings assigned to it. Option key: "%s".', $sKey ) );
+			}
+
+			$aOptionsParams['name'] = $sName;
+			$aOptionsParams['summary'] = $sSummary;
+			$aOptionsParams['description'] = $sDescription;
+			return $aOptionsParams;
+		}
 	}
 
 endif;

@@ -36,25 +36,4 @@ include_once( $sBaseDirName.'config_header.php' );
 
 		<?php include_once( dirname(__FILE__).'/widgets/icwp_common_widgets.php' ); ?>
 
-		<?php if ( $icwp_fShowAds ) : ?>
-			<div class="row" id="developer_channel_promo">
-				<div class="span12">
-					<?php echo getWidgetIframeHtml('dashboard-widget-developerchannel-wtb'); ?>
-				</div>
-			</div><!-- / row -->
-		<?php endif; ?>
-
-		<div class="row" id="tbs_docs">
-			<?php // include_once( 'config_summary.php' ); ?>
-			<?php // include_once( 'icwp-wpsf-changlog_summary.php' ); ?>
-		</div><!-- / row -->
-		
-		<div class="row">
-		  <div class="span6">
-		  </div><!-- / span6 -->
-		  <div class="span6">
-		  	<p></p>
-		  </div><!-- / span6 -->
-		</div><!-- / row -->
-
 <?php include_once( $sBaseDirName.'config_footer.php' );

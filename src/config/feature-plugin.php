@@ -9,11 +9,21 @@ properties:
 # Options Sections
 sections:
   -
+    slug: 'section_global_options'
+    primary: true
+  -
     slug: 'section_non_ui'
     hidden: true
 
 # Define Options
 options:
+  -
+    key: 'delete_on_deactivate'
+    section: 'section_global_options'
+    default: 'N'
+    type: 'checkbox'
+    link_info: ''
+    link_blog: ''
   -
     key: 'current_plugin_version'
     section: 'section_non_ui'

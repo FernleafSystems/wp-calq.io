@@ -6,8 +6,8 @@ $sInnerSpanSize = 'span4';
 
 function printFeatureSummaryBlock( $fOn, $sName, $sSettingsHref= '', $sInnerSpanSize = 4 ) {
 	$sFeatureSummaryBlockNameTemplates = '%s : <span class="feature-enabled-text">%s</span>';
-	$sOn = _wpsf__( 'On' );
-	$sOff = _wpsf__( 'Off' );
+	$sOn = _calqio__( 'On' );
+	$sOff = _calqio__( 'Off' );
 ?>
 	<div class="span<?php echo $sInnerSpanSize;?> feature-summary-block state-<?php echo strtolower( $fOn? $sOn : $sOff ); ?>"
 		 id="feature-<?php echo str_replace( ' ', '', strtolower($sName) ); ?>"
@@ -18,7 +18,7 @@ function printFeatureSummaryBlock( $fOn, $sName, $sSettingsHref= '', $sInnerSpan
 				<div class="span8 offset1">
 					<a class="btn btn-<?php echo $fOn?'success':'warning';?>"
 						<?php echo empty($sSettingsHref)? 'disabled="disabled"': sprintf('href="%s"',$sSettingsHref);?>>
-						<?php echo empty($sSettingsHref)? _wpsf_e('See Below') : _wpsf_e('Go To Settings');?>
+						<?php echo empty($sSettingsHref)? _calqio_e('See Below') : _calqio_e('Go To Settings');?>
 					</a>
 				</div>
 		</div>
@@ -101,7 +101,7 @@ function printFeatureSummaryBlock( $fOn, $sName, $sSettingsHref= '', $sInnerSpan
 
 <div class="row-fluid">
 	<div class="span">
-		<h3><?php _wpsf_e('Plugin Activated Features Summary:');?></h3>
+		<h3><?php _calqio_e('Plugin Activated Features Summary:'); ?></h3>
 	</div>
 </div>
 <div class="row-fluid feature-summary-blocks">
