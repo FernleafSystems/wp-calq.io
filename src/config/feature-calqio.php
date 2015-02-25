@@ -3,8 +3,9 @@ return "---
 properties:
   slug: 'calqio'
   name: 'Calq.io'
-  show_feature_menu_item: false
+  show_feature_menu_item: true
   storage_key: 'calqio' # should correspond exactly to that in the feature-plugin.php
+  menu_title: 'Tracking Options'
 # Options Sections
 sections:
   -

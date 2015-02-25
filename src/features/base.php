@@ -331,7 +331,6 @@ if ( !class_exists( 'ICWP_CALQIO_FeatureHandler_Base_V3', false ) ):
 
 				$aAdditionalItems = $this->getOptionsVo()->getAdditionalMenuItems();
 				if ( !empty( $aAdditionalItems ) && is_array( $aAdditionalItems ) ) {
-
 					foreach( $aAdditionalItems as $aMenuItem ) {
 
 						if ( empty( $aMenuItem['callback'] ) || !method_exists( $this, $aMenuItem['callback'] ) ) {

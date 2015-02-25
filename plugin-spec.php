@@ -3,7 +3,7 @@ return "---
 properties:
   version: '1.0'
   slug_parent: 'icwp'
-  slug_plugin: 'app'
+  slug_plugin: 'calqio'
   text_domain: 'wp-calqio'
   base_permissions: 'manage_options'
   wpms_network_admin_only: true

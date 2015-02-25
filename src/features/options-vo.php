@@ -446,7 +446,7 @@ class ICWP_CALQIO_OptionsVO extends ICWP_CALQIO_Foundation {
 		$oWp = $this->loadWpFunctionsProcessor();
 
 		$sTransientKey = $this->getSpecTransientStorageKey();
-		$aConfig = $oWp->getTransient( $sTransientKey );
+//		$aConfig = $oWp->getTransient( $sTransientKey );
 
 		if ( empty( $aConfig ) ) {
 			$sConfigFile = $this->getConfigFilePath();
