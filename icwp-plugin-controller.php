@@ -48,6 +48,9 @@ class ICWP_CALQIO_Plugin_Controller extends ICWP_CALQIO_Foundation {
 	 */
 	private $sPluginBaseFile;
 
+	/**
+	 * @var array
+	 */
 	private $aRequirementsMessages;
 
 	/**
@@ -68,25 +71,27 @@ class ICWP_CALQIO_Plugin_Controller extends ICWP_CALQIO_Foundation {
 	}
 
 	/**
-	 * @param $sRootFile
+	 * @param string $sRootFile
 	 * @throws Exception
 	 */
 	private function __construct( $sRootFile ) {
 		self::$sRootFile = $sRootFile;
 		if ( empty( self::$aPluginSpec ) ) {
 			self::$aPluginSpec = $this->readPluginConfiguration();
-
-			// Only check requirements on the admin side to ensure no frontend penalty
-			if ( is_admin() && !$this->getMeetsRequirements() ) {
-				add_action(	'admin_menu', array( $this, 'adminNoticeDoesNotMeetRequirements' ) );
-				add_action(	'network_admin_notices', array( $this, 'adminNoticeDoesNotMeetRequirements' ) );
-				throw new Exception( 'Plugin does not meet minimum requirements' );
-			}
+			$this->checkMinimumRequirements();
 			$this->doRegisterHooks();
 		}
 	}
 
-	protected function getMeetsRequirements() {
+	/**
+	 * @param bool $bCheckOnlyFrontEnd
+	 * @throws Exception
+	 */
+	private function checkMinimumRequirements( $bCheckOnlyFrontEnd = true ) {
+		if ( $bCheckOnlyFrontEnd && !is_admin() ) {
+			return;
+		}
+
 		$bMeetsRequirements = true;
 		$aRequirementsMessages = $this->getRequirementsMessages();
 
@@ -107,20 +112,16 @@ class ICWP_CALQIO_Plugin_Controller extends ICWP_CALQIO_Foundation {
 			}
 		}
 
-		$this->aRequirementsMessages = $aRequirementsMessages;
-		return $bMeetsRequirements;
+		if ( !$bMeetsRequirements ) {
+			$this->aRequirementsMessages = $aRequirementsMessages;
+			add_action(	'admin_menu', array( $this, 'adminNoticeDoesNotMeetRequirements' ) );
+			add_action(	'network_admin_notices', array( $this, 'adminNoticeDoesNotMeetRequirements' ) );
+			throw new Exception( 'Plugin does not meet minimum requirements' );
+		}
 	}
 
 	/**
-	 * @return array
 	 */
-	protected function getRequirementsMessages() {
-		if ( !isset( $this->aRequirementsMessages ) ) {
-			$this->aRequirementsMessages = array();
-		}
-		return $this->aRequirementsMessages;
-	}
-
 	public function adminNoticeDoesNotMeetRequirements() {
 		$sMessage = sprintf( 'Web Hosting requirements for Plugin "%s" are not met and you should deactivate the plugin.',
 			'<strong>'.$this->getHumanName().'</strong>'
@@ -131,6 +132,16 @@ class ICWP_CALQIO_Plugin_Controller extends ICWP_CALQIO_Foundation {
 		}
 		$sMessage .= sprintf( '<a href="https://wordpress.org/plugins/%s/faq" target="_blank">Click here for more information on requirements</a>.', $this->getTextDomain() );
 		echo $this->wrapAdminNoticeHtml( $sMessage, 'error' );
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getRequirementsMessages() {
+		if ( !isset( $this->aRequirementsMessages ) ) {
+			$this->aRequirementsMessages = array();
+		}
+		return $this->aRequirementsMessages;
 	}
 
 	/**
